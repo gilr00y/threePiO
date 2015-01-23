@@ -38,6 +38,10 @@ io.sockets.on('connection', function(socket) {
   });
 });
 
+function commandCompleted(cmd) {
+  io.sockets.emit('command_completed', { uuid: cmd.uuid });
+}
+
 // start server
 var port = process.env.PORT || 3000;
 server.listen(port);

@@ -29,6 +29,11 @@ $(document).ready(function() {
     $commandHistory.append('<div>' + data.name + ': ' + data.cmd + '</div>');
 	});
 
+  // remove completd command from queue
+  socket.on('command_completed', function(data) {
+    $('#' + data.uuid).remove();
+  });
+
 	//send commands
   function addCommand() {
 		var cmd = $commandInput.val();
