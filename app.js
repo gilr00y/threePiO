@@ -2,6 +2,7 @@ var app = require('koa')();
 var router = require('koa-router');
 var serve = require('koa-static');
 var handlebars = require("koa-handlebars");
+var uuid = require('node-uuid');
 
 // configure middleware
 app.use(serve(__dirname + '/public'));
@@ -27,8 +28,13 @@ app.get('/', function *(next) {
 io.sockets.on('connection', function(socket) {
   // user submits command
   socket.on('add_command', function(data) {
-    commands.push(data.cmd);
-    io.sockets.emit('added_command', { name: data.name, cmd: data.cmd });
+    var id = uuid.v1();
+    commands.push({cmd: data.cmd, uuid: id});
+    io.sockets.emit('added_command', {
+      uuid: id,
+      name: data.name,
+      cmd: data.cmd
+    });
   });
 });
 

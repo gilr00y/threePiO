@@ -25,7 +25,7 @@ $(document).ready(function() {
 
 	//print received commands
 	socket.on('added_command', function(data) {
-    $commandQueue.append('<div>' + data.name + ': ' + data.cmd + '</div>');
+    $commandQueue.append('<div id="' + data.uuid +'">' + data.name + ': ' + data.cmd + '</div>');
     $commandHistory.append('<div>' + data.name + ': ' + data.cmd + '</div>');
 	});
 
