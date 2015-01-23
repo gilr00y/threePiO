@@ -26,6 +26,7 @@ $(document).ready(function() {
 	//print received commands
 	socket.on('added_command', function(data) {
     $commandQueue.append('<div>' + data.name + ': ' + data.cmd + '</div>');
+    $commandHistory.append('<div>' + data.name + ': ' + data.cmd + '</div>');
 	});
 
 	//send commands
@@ -39,7 +40,6 @@ $(document).ready(function() {
 
       // send command to server
       socket.emit('add_command', { name: name, cmd: cmd });
-      $commandHistory.append('<div>' + name + ': ' + cmd + '</div>');
       $commandInput.val('');
     }
   }
