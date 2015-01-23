@@ -15,7 +15,7 @@ app.use(router(app));
 var server = require('http').Server(app.callback());
 var io = require('socket.io')(server);
 
-var commands = ['test'];
+var commands = [];
 
 // routes
 app.get('/', function *(next) {
@@ -35,11 +35,19 @@ io.sockets.on('connection', function(socket) {
       name: data.name,
       cmd: data.cmd
     });
+
+    // user cancels command
+    socket.on('command_canceled', function(data) {
+      commands = commands.filter(function(command) {
+        return command.uuid != data.uuid;
+      });
+      commandCompleted(data.uuid);
+    });
   });
 });
 
-function commandCompleted(cmd) {
-  io.sockets.emit('command_completed', { uuid: cmd.uuid });
+function commandCompleted(uuid) {
+  io.sockets.emit('command_completed', { uuid: uuid });
 }
 
 // start server

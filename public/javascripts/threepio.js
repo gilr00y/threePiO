@@ -25,7 +25,10 @@ $(document).ready(function() {
 
 	//print received commands
 	socket.on('added_command', function(data) {
-    $commandQueue.append('<div id="' + data.uuid +'">' + data.name + ': ' + data.cmd + '</div>');
+    $commandQueue.append('<div id="' + data.uuid +'">' +
+                         data.name + ': ' + data.cmd +
+                         '<button data-uuid="' + data.uuid +
+                         '"class="cancel">Cancel</button></div>');
     $commandHistory.append('<div>' + data.name + ': ' + data.cmd + '</div>');
 	});
 
@@ -64,6 +67,11 @@ $(document).ready(function() {
     else if(ev.keyCode === 40) { // down arrow
       modifyCommandPointer(1);
     }
+  });
+
+  $('.command-queue').on('click', '.cancel', function(ev) {
+    var uuid = $(this).data('uuid');
+    socket.emit('command_canceled', { uuid: uuid });
   });
 
 });
