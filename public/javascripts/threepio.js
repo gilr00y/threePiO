@@ -6,7 +6,7 @@ $(document).ready(function() {
   var $commandHistory = $('.command-history');
   var $nameInput = $('.name-input');
 
-  var commandHistory = [''];
+  var userCommands = [''];
   var commandPointer = 0;
 
   // helper functions
@@ -15,12 +15,12 @@ $(document).ready(function() {
   }
 
   function modifyCommandPointer(num) {
-    commandPointer = (commandPointer + num) % commandHistory.length;
+    commandPointer = (commandPointer + num) % userCommands.length;
     // cycle back to end if go past beginning
     if(commandPointer === -1) {
-      commandPointer = commandHistory.length - 1;
+      commandPointer = userCommands.length - 1;
     }
-    $commandInput.val(commandHistory[commandPointer]);
+    $commandInput.val(userCommands[commandPointer]);
   }
 
 	//print received commands
@@ -35,8 +35,8 @@ $(document).ready(function() {
     var name = getName();
     if(cmd) {
       // store command history
-      commandHistory.push(cmd);
-      commandPointer = commandHistory.length;
+      userCommands.push(cmd);
+      commandPointer = userCommands.length;
 
       // send command to server
       socket.emit('add_command', { name: name, cmd: cmd });
