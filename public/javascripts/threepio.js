@@ -23,13 +23,25 @@ $(document).ready(function() {
     $commandInput.val(userCommands[commandPointer]);
   }
 
+  function timestamp() {
+    var date = new Date();
+    return (date.getMonth() + 1) + '/' +
+      date.getDate() + '/' +
+      date.getFullYear() + ' ' +
+      date.getHours() + ':' +
+      date.getMinutes() + ':' +
+      date.getSeconds();
+  }
+
 	//print received commands
 	socket.on('added_command', function(data) {
-    $commandQueue.append('<div id="' + data.uuid +'">' +
+    $commandQueue.append('<div class="queue-item" id="' + data.uuid +'">' +
                          data.name + ': ' + data.cmd +
-                         '<button data-uuid="' + data.uuid +
-                         '"class="cancel">Cancel</button></div>');
-    $commandHistory.append('<div>' + data.name + ': ' + data.cmd + '</div>');
+                         ' <button data-uuid="' + data.uuid +
+                         '"class="btn btn-default cancel">Cancel</button></div>');
+    $commandHistory.append('<div class="history-item">' +
+                           data.name + ': ' + data.cmd +
+                           ' (' + timestamp()  + ')</div>');
 	});
 
   // remove completd command from queue

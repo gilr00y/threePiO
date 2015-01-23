@@ -1,0 +1,19 @@
+.command-history {
+  max-height: 300px;
+  min-height: 50px;
+  overflow: scroll;
+}
+
+.command-queue {
+  max-height: 300px;
+  min-height: 50px;
+  overflow: scroll;
+}
+
+.queue-item {
+  margin: 5px;
+}
+
+.history-item {
+  margin: 5px;
+}
