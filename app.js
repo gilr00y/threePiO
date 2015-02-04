@@ -44,6 +44,11 @@ io.sockets.on('connection', function(socket) {
       commandCompleted(data.uuid);
     });
   });
+
+  socket.on('timeout_change', function(data) {
+    console.log("TIMEOUT CHANGE:");
+    console.log(data);
+  });
 });
 
 function commandCompleted(uuid) {

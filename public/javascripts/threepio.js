@@ -5,6 +5,7 @@ $(document).ready(function() {
   var $commandInput = $('.command-input');
   var $commandHistory = $('.command-history');
   var $nameInput = $('.name-input');
+  var $timeoutSelect = $('[data-js="select-timeout"]');
 
   var userCommands = [''];
   var commandPointer = 0;
@@ -64,10 +65,18 @@ $(document).ready(function() {
     }
   }
 
+  function publishTimeoutChange(timeoutValue) {
+    socket.emit('timeout_change', { timeout: timeoutValue });
+  }
+
   // register event handlers
 	$commandBtn.click(function(ev) {
     addCommand();
 	});
+
+  $timeoutSelect.change(function(ev) {
+    publishTimeoutChange(ev.target.value);
+  })
 
   $commandInput.keyup(function(ev) {
     if(ev.keyCode === 13) { // enter
