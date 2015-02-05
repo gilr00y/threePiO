@@ -3,6 +3,7 @@ var router = require('koa-router');
 var serve = require('koa-static');
 var handlebars = require("koa-handlebars");
 var uuid = require('node-uuid');
+var net  = require ('net');
 
 // configure middleware
 app.use(serve(__dirname + '/public'));
@@ -49,6 +50,20 @@ io.sockets.on('connection', function(socket) {
 function commandCompleted(uuid) {
   io.sockets.emit('command_completed', { uuid: uuid });
 }
+
+setInterval(executeCommands, 3000);
+
+function executeCommands() {
+  if(commands.length > 0) {
+    command = commands.shift();
+    console.log(command)
+    tcp.write(command.cmd + '\n');
+  }
+}
+ 
+// connect to tcp socket
+// returns new net.Socket object
+tcp = net.connect(7570);
 
 // start server
 var port = process.env.PORT || 3000;

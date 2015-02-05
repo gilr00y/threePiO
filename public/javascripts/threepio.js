@@ -1,5 +1,5 @@
 $(document).ready(function() {
-	var socket = io.connect('http://localhost:3000');
+	var socket = io.connect('http://10.1.2.169:3000');
   var $commandQueue = $('.command-queue');
   var $commandBtn = $('.command-btn');
   var $commandInput = $('.command-input');
@@ -70,7 +70,7 @@ $(document).ready(function() {
 	});
 
   $commandInput.keyup(function(ev) {
-    if(ev.keyCode === 13) { // enter
+    if(ev.keyCode === 13 && !ev.shiftKey) { // enter
       addCommand();
     }
     else if(ev.keyCode === 38) { // up arrow
