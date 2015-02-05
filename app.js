@@ -5,6 +5,8 @@ var handlebars = require("koa-handlebars");
 var uuid = require('node-uuid');
 var net  = require ('net');
 
+var commandDelay = 3000; //ms
+
 // configure middleware
 app.use(serve(__dirname + '/public'));
 app.use(handlebars({
@@ -45,20 +47,25 @@ io.sockets.on('connection', function(socket) {
       commandCompleted(data.uuid);
     });
   });
+
+  socket.on('timeout_change', function(data) {
+    var newDelaySeconds = parseFloat(data.timeout);
+    commandDelay = newDelaySeconds * 1000 // convert seconds to ms
+  });
 });
 
 function commandCompleted(uuid) {
   io.sockets.emit('command_completed', { uuid: uuid });
 }
 
-setInterval(executeCommands, 3000);
-
 function executeCommands() {
   if(commands.length > 0) {
     command = commands.shift();
     console.log(command)
     tcp.write(command.cmd + '\n');
+    commandCompleted(command.uuid);
   }
+  setTimeout(executeCommands, commandDelay);
 }
  
 // connect to tcp socket
@@ -68,3 +75,6 @@ tcp = net.connect(7570);
 // start server
 var port = process.env.PORT || 3000;
 server.listen(port);
+
+// begin command execution
+executeCommands();
