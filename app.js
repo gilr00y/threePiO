@@ -51,6 +51,7 @@ io.sockets.on('connection', function(socket) {
   socket.on('timeout_change', function(data) {
     var newDelaySeconds = parseFloat(data.timeout);
     commandDelay = newDelaySeconds * 1000 // convert seconds to ms
+    io.sockets.emit('timeout_changed', { timeout: newDelaySeconds });
   });
 });
 

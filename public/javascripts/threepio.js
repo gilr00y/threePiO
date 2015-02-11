@@ -1,5 +1,5 @@
 $(document).ready(function() {
-	var socket = io.connect('http://10.1.2.169:3000');
+	var socket = io.connect('http://localhost:3000');
   var $commandQueue = $('.command-queue');
   var $commandBtn = $('.command-btn');
   var $commandInput = $('.command-input');
@@ -48,6 +48,10 @@ $(document).ready(function() {
   // remove completd command from queue
   socket.on('command_completed', function(data) {
     $('#' + data.uuid).remove();
+  });
+
+  socket.on('timeout_changed', function(data) {
+    $timeoutSelect.val(data.timeout);
   });
 
 	//send commands
