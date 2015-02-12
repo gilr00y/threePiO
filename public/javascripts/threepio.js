@@ -34,15 +34,28 @@ $(document).ready(function() {
       date.getSeconds();
   }
 
+  function appendQueueItem(command) {
+    $commandQueue.append('<div class="queue-item" id="' + command.uuid +'">' +
+                         command.name + ': ' + command.cmd +
+                         ' <button data-uuid="' + command.uuid +
+                         '"class="btn btn-default cancel">Cancel</button></div>');
+  }
+
+  function appendHistoryItem(command) {
+    $commandHistory.append('<div class="history-item">' +
+                           command.name + ': ' + command.cmd +
+                           ' (' + timestamp()  + ')</div>');
+  }
+
+  // request initial data
+  socket.on('connect', function() {
+    socket.emit('get_initial_data');
+  });
+
 	//print received commands
 	socket.on('added_command', function(data) {
-    $commandQueue.append('<div class="queue-item" id="' + data.uuid +'">' +
-                         data.name + ': ' + data.cmd +
-                         ' <button data-uuid="' + data.uuid +
-                         '"class="btn btn-default cancel">Cancel</button></div>');
-    $commandHistory.append('<div class="history-item">' +
-                           data.name + ': ' + data.cmd +
-                           ' (' + timestamp()  + ')</div>');
+    appendQueueItem(data);
+    appendHistoryItem(data);
 	});
 
   // remove completd command from queue
@@ -51,6 +64,17 @@ $(document).ready(function() {
   });
 
   socket.on('timeout_changed', function(data) {
+    $timeoutSelect.val(data.timeout);
+  });
+
+  socket.on('initial_data', function(data) {
+    // show existing commands in the queue
+    var commands = data.commands;
+    commands.forEach(function(command) {
+      appendQueueItem(command);
+    });
+
+    // set existing timeout
     $timeoutSelect.val(data.timeout);
   });
 
@@ -64,7 +88,7 @@ $(document).ready(function() {
       commandPointer = userCommands.length;
 
       // send command to server
-      socket.emit('add_command', { name: name, cmd: cmd });
+      socket.emit('add_command', { name: name, cmd: cmd, user: $nameInput.val() });
       $commandInput.val('');
     }
   }

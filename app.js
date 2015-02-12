@@ -29,10 +29,18 @@ app.get('/', function *(next) {
 
 // socket.io
 io.sockets.on('connection', function(socket) {
+  // user requests intitial data
+  socket.on('get_initial_data', function(data) {
+    socket.emit('initial_data', {
+      timeout: commandDelay / 1000,
+      commands: commands
+    });
+  });
+
   // user submits command
   socket.on('add_command', function(data) {
     var id = uuid.v1();
-    commands.push({cmd: data.cmd, uuid: id});
+    commands.push({cmd: data.cmd, uuid: id, name: data.name});
     io.sockets.emit('added_command', {
       uuid: id,
       name: data.name,
@@ -48,6 +56,7 @@ io.sockets.on('connection', function(socket) {
     });
   });
 
+  // user changes timeout (command delay)
   socket.on('timeout_change', function(data) {
     var newDelaySeconds = parseFloat(data.timeout);
     commandDelay = newDelaySeconds * 1000 // convert seconds to ms
@@ -68,7 +77,7 @@ function executeCommands() {
   }
   setTimeout(executeCommands, commandDelay);
 }
- 
+
 // connect to tcp socket
 // returns new net.Socket object
 tcp = net.connect(7570);
