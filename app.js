@@ -9,6 +9,7 @@ var commandDelay = 3000; //ms
 
 // configure middleware
 app.use(serve(__dirname + '/public'));
+app.use(serve(__dirname + '/bower_components'));
 app.use(handlebars({
     defaultLayout: "main"
 }));
